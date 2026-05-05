@@ -1,18 +1,28 @@
-# Impactômetro Leia Mulheres
+# Impactômetro Leia Mulheres - Repositório de Desenvolvimento
 
-Este repositório centraliza o desenvolvimento do sistema "Impactômetro Leia Mulheres", que visa quantificar e qualificar o impacto social do projeto "Leia Mulheres" dentro do programa "Meninas Digitais".
+Este repositório contém o código-fonte e a documentação do sistema **Impactômetro Leia Mulheres**, desenvolvido para a disciplina de Engenharia de Software da UTFPR.
 
-## Estrutura do Repositório
+## 1. Informações da Equipe e Projeto
+*   **Equipe:** [Nomes dos Integrantes]
+*   **Objetivo do Sistema:** Quantificar e qualificar o impacto social do projeto de extensão "Leia Mulheres" através de indicadores de engajamento e percepção social.
+*   **Funcionalidades Desenvolvidas (Entrega Parcial):**
+    *   Arquitetura Base da API (Flask + MongoDB).
+    *   Implementação das Rotas de Coleta de Dados (Eventos e Questionários).
+    *   Validação de Dados com Pydantic Schemas.
+    *   Documentação Automática e Testável via Swagger UI.
 
-- `/backend`: API desenvolvida em Flask com integração ao MongoDB.
-- `/frontend`: Interface de usuário desenvolvida em React.
+## 2. Estrutura do Projeto
+*   `/backend`: API em Python/Flask (Funcionalidades de coleta e processamento).
+*   `/frontend`: Interface em React (Em desenvolvimento).
 
-## Como Contribuir
+## 3. Roteiro Rápido para Execução
+Para instruções detalhadas de como salvar o código, compilar e executar cada parte, consulte os arquivos README específicos:
+*   [Instruções do Backend](./backend/README.md)
+*   [Instruções do Frontend](./frontend/README.md)
 
-1.  Clone este repositório.
-2.  Siga as instruções de setup em cada subdiretório (`/backend` e `/frontend`).
-3.  Crie uma nova branch para suas alterações e submeta um Pull Request.
+## 4. Vídeo de Instalação e Execução
+Confira o processo completo de configuração e o sistema em funcionamento no link abaixo:
+*   [Vídeo de Demonstração (YouTube)](Substituir pelo link real)
 
-## Repositório Original
-
-[https://github.com/M4FEUS/Certificadora-3.git](https://github.com/M4FEUS/Certificadora-3.git)
+---
+**Importante:** O prazo limite para alterações neste repositório para fins de avaliação parcial é **09/05/2026**.
