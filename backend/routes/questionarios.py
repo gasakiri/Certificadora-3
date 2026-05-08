@@ -25,7 +25,7 @@ def submeter_questionario():
           properties:
             participante_id:
               type: string
-              example: "user_99"
+              example: "69fde0fb83fd5de6f521a3b6"
             evento_id:
               type: string
               example: "69fde0fb83fd5de6f521a3b6"
@@ -46,6 +46,16 @@ def submeter_questionario():
         quest = QuestionarioSchema(**raw_data)
         dados = quest.model_dump()
         if db is not None:
+            participacao = db.participacoes.find_one(
+                {
+                    "participante_id": dados["participante_id"],
+                    "evento_id": dados["evento_id"],
+                }
+            )
+
+            if not participacao:
+                return jsonify({"message": "Participante não pertence ao evento"}), 403
+
             db.questionarios.update_one(
                 {
                     "participante_id": dados["participante_id"],
