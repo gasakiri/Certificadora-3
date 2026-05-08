@@ -4,10 +4,10 @@ Este repositório contém o código-fonte e a documentação do sistema **Impact
 
 ## 1. Informações da Equipe e Projeto
 *   **Equipe:** 
--Gabriel Augusto Morisaki Rita 
--Kalvin Koiti Ishii 
--Matheus Roberto Ernandes 
--Stéffane Leal Silva Santos 
+- Gabriel Augusto Morisaki Rita 
+- Kalvin Koiti Ishii 
+- Matheus Roberto Ernandes 
+- Stéffane Leal Silva Santos 
 *   **Objetivo do Sistema:** Quantificar e qualificar o impacto social do projeto de extensão "Leia Mulheres" através de indicadores de engajamento e percepção social.
 *   **Funcionalidades Desenvolvidas (Entrega Parcial):**
     *   Arquitetura Base da API (Flask + MongoDB).

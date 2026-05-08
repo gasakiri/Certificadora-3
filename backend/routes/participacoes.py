@@ -47,14 +47,18 @@ def registrar_participacao():
         participacao = ParticipacaoSchema(**raw_data)
         dados = participacao.model_dump()
 
-        db.participacoes.update_one(
-            {
-                "participante_id": dados["participante_id"],
-                "evento_id": dados["evento_id"],
-            },
-            {"$set": dados},
-            upsert=True,
-        )
+        if db is not None:
+            db.participacoes.update_one(
+                {
+                    "participante_id": dados["participante_id"],
+                    "evento_id": dados["evento_id"],
+                },
+                {"$set": dados},
+                upsert=True,
+            )
+            return jsonify({"message": "Participação registrada!"}), 201
+        else:
+            return jsonify({"message": "[DEMO] Participação validada, sem banco", "data": dados}), 201
 
         return jsonify({"message": "Participação registrada!"}), 201
 

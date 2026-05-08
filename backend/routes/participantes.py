@@ -52,12 +52,18 @@ def criar_participante():
         raw_data = request.get_json()
 
         participante = ParticipanteSchema(**raw_data)
+        
+        dados = participante.model_dump()
 
-        result = db.participantes.insert_one(participante.model_dump())
-
-        return jsonify(
-            {"message": "Participante criado!", "id": str(result.inserted_id)}
-        ), 201
+        if db is not None:
+            usuario_existente = db.participantes.find_one({"email": dados["email"]})
+            if usuario_existente:
+                return jsonify({"message": "Participante já cadastrado!", "id": str(usuario_existente["_id"])}), 409
+            
+            result = db.participantes.insert_one(dados)
+            return jsonify({"message": "Participante criado!", "id": str(result.inserted_id)}), 201
+        else:
+            return jsonify({"message": "[DEMO] Validação OK, sem banco ativo", "data": dados}), 201
 
     except ValidationError as e:
         return jsonify({"message": "Erro de validação", "errors": e.errors()}), 400

@@ -86,3 +86,22 @@ def criar_evento():
 
     except Exception as e:
         return jsonify({"message": "Erro interno", "error": str(e)}), 500
+
+@eventos_bp.route("/api/eventos", methods=["GET"])
+def listar_eventos():
+    """Listar todos os eventos cadastrados
+    ---
+    tags:
+      - Eventos
+    responses:
+      200:
+        description: Lista de eventos
+    """
+    if db is not None:
+        eventos = list(db.eventos.find({}, {"_id": 1, "nome": 1, "data": 1, "local": 1}))
+        # Convertendo o ObjectId do Mongo para string para evitar erro no JSON
+        for ev in eventos:
+            ev["_id"] = str(ev["_id"])
+        return jsonify(eventos), 200
+    else:
+        return jsonify({"message": "[DEMO] Banco offline, listagem indisponível"}), 503
