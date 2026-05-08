@@ -63,5 +63,9 @@ O link para o vídeo com a instalação das ferramentas e execução do sistema 
 *   [Link para o Vídeo no YouTube] (Substituir pelo link real após a gravação)
 
 ---
-**Equipe:** [Nomes dos Integrantes]
+**Equipe:** 
+-Gabriel Augusto Morisaki Rita 
+-Kalvin Koiti Ishii 
+-Matheus Roberto Ernandes 
+-Stéffane Leal Silva Santos 
 **Objetivo:** Mensurar cientificamente o impacto social do projeto Leia Mulheres.
