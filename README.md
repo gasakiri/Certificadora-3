@@ -29,4 +29,3 @@ Confira o processo completo de configuração e o sistema em funcionamento no li
 *   https://youtu.be/1zPjqhj1e7k
 
 ---
-**Importante:** O prazo limite para alterações neste repositório para fins de avaliação parcial é **09/05/2026**.
