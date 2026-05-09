@@ -172,7 +172,7 @@ python app.py
 
 O link para o vídeo com a instalação das ferramentas e execução do sistema pode ser encontrado abaixo:
 
-* [Link para o Vídeo no YouTube]
+* https://youtu.be/1zPjqhj1e7k
 
 ---
 
