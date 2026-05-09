@@ -26,7 +26,7 @@ Para instruções detalhadas de como salvar o código, compilar e executar cada 
 
 ## 4. Vídeo de Instalação e Execução
 Confira o processo completo de configuração e o sistema em funcionamento no link abaixo:
-*   [Vídeo de Demonstração (YouTube)](Substituir pelo link real)
+*   https://youtu.be/1zPjqhj1e7k
 
 ---
 **Importante:** O prazo limite para alterações neste repositório para fins de avaliação parcial é **09/05/2026**.
