@@ -67,7 +67,11 @@ def criar_evento():
         evento = EventoSchema(**raw_data)
 
         if db is not None:
-            result = db.eventos.insert_one(evento.model_dump())
+            dados = evento.model_dump()
+
+            dados["data"] = str(dados["data"])
+
+            result = db.eventos.insert_one(dados)
 
             return jsonify(
                 {"message": "Evento salvo com sucesso!", "id": str(result.inserted_id)}
