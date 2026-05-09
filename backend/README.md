@@ -151,111 +151,20 @@ python app.py
 
 ### Como Testar
 
-1. Acesse a documentação interativa em:
-   `http://localhost:5000/apidocs/`
-
----
-
-### Teste de Eventos
-
-#### Criar Evento
-
-Endpoint:
-
-```text id="’wini8"
-POST /api/eventos
-```
-
-Exemplo:
-
-```json id="’wini9"
-{
-  "nome": "Leia Mulheres Maio",
-  "data": "2026-05-20",
-  "local": "UTFPR Cornélio Procópio",
-  "livros": [
-    {
-      "titulo": "A Hora da Estrela",
-      "autora": "Clarice Lispector"
-    }
-  ]
-}
-```
-
----
-
-#### Listar Eventos
-
-Endpoint:
-
-```text id="’wini10"
-GET /api/eventos
-```
-
-Retorna todos os eventos cadastrados no banco.
-
----
-
-### Teste de Participantes
-
-Endpoint:
-
-```text id="’wini11"
-POST /api/participantes
-```
-
-Exemplo:
-
-```json id="’wini12"
-{
-  "nome": "Maria",
-  "curso": "Engenharia de Computação",
-  "email": "maria@utfpr.edu.br"
-}
-```
-
----
-
-### Teste de Participações
-
-Endpoint:
-
-```text id="’wini13"
-POST /api/participacoes
-```
-
-Exemplo:
-
-```json id="’wini14"
-{
-  "participante_id": "ID_DO_PARTICIPANTE",
-  "evento_id": "ID_DO_EVENTO"
-}
-```
-
----
-
-### Teste de Questionários
-
-Endpoint:
-
-```text id="’wini15"
-POST /api/questionarios
-```
-
-Exemplo:
-
-```json id="’wini16"
-{
-  "participante_id": "ID_DO_PARTICIPANTE",
-  "evento_id": "ID_DO_EVENTO",
-  "respostas": {
-    "interesse_tecnologia": 5,
-    "percepcao_inicial": 4,
-    "comentario": "Evento excelente"
-  }
-}
-```
+1. Acesse a documentação interativa em: `http://localhost:5000/apidocs/`.
+2. **Teste de Eventos (RF1):**
+   * Clique em `POST /api/eventos` -> `Try it out`.
+   * Envie o JSON de exemplo e verifique a resposta `201 Created`.
+   * Para listar os eventos, use `GET /api/eventos` -> `Try it out` -> `Execute`. Copie o `_id` gerado para usar nos próximos passos.
+3. **Teste de Participantes:**
+   * Clique em `POST /api/participantes` -> `Try it out`.
+   * Envie o JSON com os dados e verifique a resposta `201 Created`. Copie o `id` gerado.
+4. **Teste de Participações:**
+   * Clique em `POST /api/participacoes` -> `Try it out`.
+   * No JSON de exemplo, substitua os campos pelos IDs copiados nos passos 2 e 3. Verifique a resposta `201 Created`.
+5. **Teste de Questionários (RF2):**
+   * Clique em `POST /api/questionarios` -> `Try it out`.
+   * Utilize os mesmos IDs para vincular as respostas ao evento e verifique o registro do impacto com a resposta `201 Created`.
 
 ---
 
