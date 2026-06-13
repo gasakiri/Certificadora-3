@@ -1,0 +1,53 @@
+# Dependências (Pastas pesadas que são recriadas com npm install)
+node_modules/
+/jspm_packages/
+web_modules/
+
+# Variáveis de ambiente (Dados sensíveis como senhas e chaves de API)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+!*.env.example
+
+# Builds e Resultados de Compilação (React / Vite / Next.js)
+dist/
+build/
+out/
+.next/
+.nuxt/
+bin/
+obj/
+
+# Logs de Erros e Debugging
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Caches de ferramentas e linters
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+.cache/
+.parcel-cache
+
+# Arquivos do Sistema Operacional
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
+
+# Configurações de IDEs (Opcional, remova o '#' se quiser ignorar)
+#.vscode/
+#.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
