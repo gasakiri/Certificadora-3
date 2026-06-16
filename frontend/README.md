@@ -1,28 +1,118 @@
-# Impactômetro Leia Mulheres - Frontend
+# Impactômetro Leia Mulheres — Frontend
 
-Este diretório conterá a interface de usuário para o sistema "Impactômetro Leia Mulheres", que será desenvolvida com React.
+Este diretório contém a aplicação frontend em React para o sistema **Impactômetro Leia Mulheres**, responsável pela interface do usuário e pela comunicação com a API Flask.
 
-## Requisitos
+## 1. Ferramentas e Tecnologias
 
-- Node.js e npm (ou yarn/pnpm)
+Para executar este projeto, são necessárias as seguintes ferramentas:
 
-## Como Configurar (Após o desenvolvimento do React)
+* **Linguagem:** [JavaScript / React](https://react.dev/)
+* **Build:** [Vite](https://vitejs.dev/)
+* **Navegação:** [React Router DOM](https://reactrouter.com/)
+* **Gráficos:** [Recharts](https://recharts.org/)
+* **HTTP:** [Axios](https://axios-http.com/)
+* **Ícones:** [Lucide React](https://lucide.dev/)
+* **IDE Recomendada:** [Visual Studio Code](https://code.visualstudio.com/)
 
-1.  **Instale as dependências:**
-    ```bash
-    npm install
-    ```
+## Bibliotecas Complementares
 
-2.  **Inicie o servidor de desenvolvimento:**
-    ```bash
-    npm start
-    ```
+* `react-router-dom`
+  * Roteamento e navegação entre páginas.
+* `axios`
+  * Requisições HTTP para o backend.
+* `recharts`
+  * Visualização de dados em gráficos.
+* `lucide-react`
+  * Ícones e componentes visuais.
+* `vite`
+  * Ferramenta de build e desenvolvimento.
 
-3.  **Build para produção:**
-    ```bash
-    npm run build
-    ```
+---
 
-## Deploy no GitHub Pages
+## 2. Estrutura do Projeto
 
-O frontend (React) pode ser hospedado facilmente no **GitHub Pages**. Para isso, você pode usar o pacote `gh-pages` ou configurar uma GitHub Action para fazer o build e o deploy automaticamente.
+```text
+frontend/
+├── index.html
+├── package.json
+├── README.md
+├── vite.config.js
+├── src/
+│   ├── App.jsx
+│   ├── main.jsx
+│   ├── index.css
+│   ├── components/
+│   │   ├── RotaProtegida.jsx
+│   │   ├── Sidebar.jsx
+│   │   ├── TipoBadge.jsx
+│   │   └── Topbar.jsx
+│   ├── contexts/
+│   │   └── AuthContext.jsx
+│   ├── hooks/
+│   │   └── useApi.js
+│   ├── pages/
+│   │   ├── Cadastro.jsx
+│   │   ├── CadastroEvento.jsx
+│   │   ├── Comparativos.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── Eventos.jsx
+│   │   ├── Exportar.jsx
+│   │   ├── Impacto.jsx
+│   │   ├── Landing.jsx
+│   │   ├── Login.jsx
+│   │   ├── Participantes.jsx
+│   │   ├── Questionarios.jsx
+│   │   └── Relatorios.jsx
+│   └── services/
+│       └── api.js
+└── .env.example
+```
+
+---
+
+## 3. Execução Local
+
+### Pré-requisito
+
+* O backend Flask deve estar funcionando em `http://localhost:5000`.
+
+### Instalar dependências
+
+```bash
+cd frontend
+npm install
+```
+
+### Desenvolvimento
+
+```bash
+npm run dev
+```
+
+A aplicação ficará disponível em:
+
+```text
+http://localhost:3000
+```
+
+### Produção
+
+```bash
+npm run build
+```
+
+---
+
+## 4. Variável de Ambiente
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `VITE_API_URL` | `http://localhost:5000` | URL base da API Flask |
+
+---
+
+## 5. Observações
+
+* O frontend consome os endpoints do backend para cadastrar eventos, participantes, participações e questionários.
+* Caso o backend esteja em outra porta ou host, atualize `VITE_API_URL` no arquivo `.env`.
+* A aplicação é uma SPA e depende do roteamento client-side via React Router.
