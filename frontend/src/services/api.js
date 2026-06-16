@@ -31,5 +31,6 @@ export const registrarParticipacao = (data) => api.post('/api/participacoes', da
 
 // ── Questionários ─────────────────────────────────────────────
 export const submeterQuestionario = (data) => api.post('/api/questionarios', data);
+export const listarQuestionarios = () => api.get('/api/questionarios');
 
 export default api;

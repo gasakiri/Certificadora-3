@@ -109,7 +109,7 @@ export default function Eventos() {
             <div className="stat-label">TOTAL DE EVENTOS</div>
             <div className="stat-value">{eventos.length}</div>
           </div>
-          <div className="stat-card featured">
+          <div className="stat-card">
             <div className="stat-label">IIS MÉDIO GERAL</div>
             <div className="stat-value">—</div>
           </div>

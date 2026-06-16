@@ -53,7 +53,7 @@ export default function Impacto() {
           <>
             {/* KPIs */}
             <div className="four-col" style={{ marginBottom: 20 }}>
-              <div className="stat-card featured">
+              <div className="stat-card">
                 <div className="stat-label">IIS MÉDIO GERAL</div>
                 <div className="stat-value">{iis}</div>
                 <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>/ 10.0</div>

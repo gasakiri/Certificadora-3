@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import { Calendar, Users, BookOpen, ClipboardCheck, Search, Plus } from 'lucide-react';
 import Topbar from '../components/Topbar';
-import { listarEventos } from '../services/api';
+import { listarEventos, listarQuestionarios } from '../services/api';
 
 const BAR_COLORS = ['#c4b8e0', '#4a3f6e', '#9b6dd6', '#6b3fa0', '#c9378a', '#e4b43c'];
 
@@ -20,13 +20,21 @@ function inferirTipo(ev) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [eventos, setEventos] = useState([]);
+  const [questionarios, setQuestionarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [periodo, setPeriodo] = useState('Maio 2026');
 
   useEffect(() => {
-    listarEventos()
-      .then(r => setEventos(Array.isArray(r.data) ? r.data : []))
-      .catch(() => setEventos([]))
+    setLoading(true);
+    Promise.all([listarEventos(), listarQuestionarios()])
+      .then(([eventsRes, questionariosRes]) => {
+        setEventos(Array.isArray(eventsRes.data) ? eventsRes.data : []);
+        setQuestionarios(Array.isArray(questionariosRes.data) ? questionariosRes.data : []);
+      })
+      .catch(() => {
+        setEventos([]);
+        setQuestionarios([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -35,6 +43,36 @@ export default function Dashboard() {
   // participantes: mock derivado, pois o backend não expõe endpoint de contagem ainda
   const totalParticipantes = eventos.reduce((acc, _) => acc + Math.floor(Math.random() * 10 + 8), 0) || 0;
   const totalLivros = eventos.reduce((acc, ev) => acc + (ev.livros?.length || 0), 0);
+
+  const normalizeScore = (score) => {
+    if (typeof score !== 'number') return 0;
+    return Number(((score - 1) * 2.5).toFixed(1));
+  };
+
+  const average = (values) => {
+    if (!values.length) return 0;
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+  };
+
+  const numericResponses = (key) => questionarios
+    .map((q) => q.respostas?.[key])
+    .filter((value) => typeof value === 'number');
+
+  const engajamentoMedio = average(numericResponses('engajamento').map(normalizeScore));
+  const aprendizadoMedio = average(numericResponses('aprendizado').map(normalizeScore));
+  const identificacaoMedia = average(numericResponses('identificacao_autoras').map(normalizeScore));
+  const interesseMedio = average(numericResponses('interesse_tecnologia').map(normalizeScore));
+  const percepcaoMedia = average(numericResponses('percepcao_impacto').map(normalizeScore));
+
+  const iis = questionarios.length > 0
+    ? Number((
+      engajamentoMedio * 0.25 +
+      aprendizadoMedio * 0.30 +
+      identificacaoMedia * 0.20 +
+      interesseMedio * 0.15 +
+      percepcaoMedia * 0.10
+    ).toFixed(1))
+    : 0;
 
   // Últimos 6 eventos para o gráfico (participantes mockados até endpoint disponível)
   const ultimosSeis = eventos.slice(-6).map((ev, i) => ({
@@ -75,7 +113,6 @@ export default function Dashboard() {
             icon={<Users size={16} />}
             label="Participantes Totais"
             value={loading ? '—' : totalParticipantes}
-            featured
           />
           <StatCard
             icon={<BookOpen size={16} />}
@@ -85,7 +122,7 @@ export default function Dashboard() {
           <StatCard
             icon={<ClipboardCheck size={16} />}
             label="Questionários Respondidos"
-            value="—"
+            value={loading ? '—' : questionarios.length}
           />
         </div>
 
@@ -180,7 +217,56 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div style={{ background: 'var(--sidebar-bg)', borderRadius: 'var(--radius-lg)', minHeight: 200 }} />
+          <div style={{
+            background: 'var(--sidebar-bg)',
+            borderRadius: 'var(--radius-lg)',
+            minHeight: 200,
+            padding: 20,
+            color: '#fff',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            <div>
+              <div style={{
+                fontSize: 11,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: '#c4b8e0',
+                marginBottom: 12
+              }}>
+                Índice de Impacto Social - IIS
+              </div>
+              <div style={{ fontSize: 48, fontWeight: 700, lineHeight: 1, color: '#fff' }}>
+                {questionarios.length ? iis : '—'}
+              </div>
+              <div style={{ marginTop: 8, fontSize: 12, color: '#b8a9d7' }}>
+                média ponderada · {periodo}
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 18 }}>
+              {[
+                { label: 'Engajamento', value: engajamentoMedio ? engajamentoMedio.toFixed(1) : '—' },
+                { label: 'Aprendizado', value: aprendizadoMedio ? aprendizadoMedio.toFixed(1) : '—' },
+                { label: 'Percepção', value: percepcaoMedia ? percepcaoMedia.toFixed(1) : '—' },
+                { label: 'Intenção', value: interesseMedio ? interesseMedio.toFixed(1) : '—' }
+              ].map(item => (
+                <div key={item.label} style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '12px 14px'
+                }}>
+                  <div style={{ fontSize: 10, color: '#b8a9d7', marginBottom: 4, textTransform: 'uppercase' }}>
+                    {item.label}
+                  </div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>
+                    {item.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -108,11 +108,3 @@ npm run build
 | Variável | Padrão | Descrição |
 |----------|--------|-----------|
 | `VITE_API_URL` | `http://localhost:5000` | URL base da API Flask |
-
----
-
-## 5. Observações
-
-* O frontend consome os endpoints do backend para cadastrar eventos, participantes, participações e questionários.
-* Caso o backend esteja em outra porta ou host, atualize `VITE_API_URL` no arquivo `.env`.
-* A aplicação é uma SPA e depende do roteamento client-side via React Router.

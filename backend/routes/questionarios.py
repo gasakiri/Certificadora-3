@@ -76,3 +76,22 @@ def submeter_questionario():
         return jsonify({"message": "Erro de validação", "errors": e.errors()}), 400
     except Exception as e:
         return jsonify({"message": "Erro interno", "error": str(e)}), 500
+
+
+@questionarios_bp.route("/api/questionarios", methods=["GET"])
+def listar_questionarios():
+    """Listar todos os questionários cadastrados
+    ---
+    tags:
+      - Questionários
+    responses:
+      200:
+        description: Lista de questionários
+    """
+    if db is not None:
+        questionarios = list(db.questionarios.find({}, {"_id": 1, "participante_id": 1, "evento_id": 1, "respostas": 1}))
+        for quest in questionarios:
+            quest["_id"] = str(quest["_id"])
+        return jsonify(questionarios), 200
+    else:
+        return jsonify({"message": "[DEMO] Banco offline, listagem indisponível"}), 503
