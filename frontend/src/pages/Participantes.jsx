@@ -6,10 +6,14 @@ import { useEffect } from 'react';
 
 const CURSOS = [
   'Engenharia de Computação',
+  'Engenharia de Controle e Automação',
+  'Engenharia de Software',
   'Engenharia Elétrica',
+  'Engenharia Eletrônica',
   'Engenharia Mecânica',
-  'Ciência da Computação',
-  'Sistemas de Informação',
+  'Licenciatura em Matemática',
+  'Tecnologia em Análise e Desenvolvimento de Sistemas',
+  'Não se aplica',
   'Outro',
 ];
 
@@ -31,20 +35,32 @@ export default function Participantes() {
       .catch(() => {});
   }, []);
 
-  const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const update = (k, v) => setForm(f => ({
+    ...f,
+    [k]: v,
+    ...(k === 'curso' && v !== 'Outro' ? { cursoOutro: '' } : {}),
+  }));
   const updatePart = (k, v) => setPartForm(f => ({ ...f, [k]: v }));
 
   const handleCadastro = async () => {
-    if (!form.nome || !form.email || !form.curso) {
+    const cursoFinal = form.curso === 'Outro' ? form.cursoOutro.trim() : form.curso;
+    if (!form.nome || !form.email || !cursoFinal) {
       setFeedback({ type: 'error', msg: 'Preencha todos os campos obrigatórios.' });
       return;
     }
+
+    const payload = {
+      nome: form.nome,
+      email: form.email,
+      curso: cursoFinal,
+    };
+
     setLoading(true);
     setFeedback(null);
     try {
-      const res = await criarParticipante(form);
+      const res = await criarParticipante(payload);
       setFeedback({ type: 'success', msg: `Participante cadastrado! ID: ${res.data.id || '—'}` });
-      setForm({ nome: '', email: '', curso: CURSOS[0] });
+      setForm({ nome: '', email: '', curso: CURSOS[0], cursoOutro: '' });
     } catch (e) {
       const msg = e?.response?.data?.message || 'Erro ao cadastrar participante.';
       setFeedback({ type: e?.response?.status === 409 ? 'info' : 'error', msg });
@@ -108,23 +124,35 @@ export default function Participantes() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div className="form-group">
                 <label className="form-label">Nome completo *</label>
-                <input className="form-input" placeholder="Ex: Sara Alves" value={form.nome} onChange={e => update('nome', e.target.value)} />
+                <input className="form-input" placeholder="Seu nome completo" value={form.nome} onChange={e => update('nome', e.target.value)} />
               </div>
 
               <div className="form-group">
                 <label className="form-label">E-mail *</label>
-                <input type="email" className="form-input" placeholder="Ex: sara@utfpr.edu.br" value={form.email} onChange={e => update('email', e.target.value)} />
+                <input type="email" className="form-input" placeholder="Ex: email@gmail.com" value={form.email} onChange={e => update('email', e.target.value)} />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Curso *</label>
                 <select className="form-select" value={form.curso} onChange={e => update('curso', e.target.value)}>
-                  {CURSOS.map(c => <option key={c}>{c}</option>)}
+                  {CURSOS.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
 
+              {form.curso === 'Outro' && (
+                <div className="form-group">
+                  <label className="form-label">Qual outro curso? *</label>
+                  <input
+                    className="form-input"
+                    placeholder="Informe o curso"
+                    value={form.cursoOutro}
+                    onChange={e => update('cursoOutro', e.target.value)}
+                  />
+                </div>
+              )}
+
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 4 }}>
-                <button className="btn btn-outline" onClick={() => setForm({ nome: '', email: '', curso: CURSOS[0] })}>Limpar</button>
+                <button className="btn btn-outline" onClick={() => setForm({ nome: '', email: '', curso: CURSOS[0], cursoOutro: '' })}>Limpar</button>
                 <button className="btn btn-primary" onClick={handleCadastro} disabled={loading}>
                   {loading ? <><div className="spinner" style={{ width: 14, height: 14 }} /> Salvando...</> : 'Cadastrar'}
                 </button>

@@ -30,7 +30,7 @@ def criar_participante():
           properties:
             nome:
               type: string
-              example: "Sara Alves"
+              example: "Seu Nome"
 
             curso:
               type: string
@@ -38,7 +38,7 @@ def criar_participante():
 
             email:
               type: string
-              example: "saraalves@utfpr.edu.br"
+              example: "email@gmail.com"
 
     responses:
       201:
