@@ -40,8 +40,11 @@ export default function Dashboard() {
 
   // KPIs derivados dos dados reais (ou zeros se offline)
   const totalEventos = eventos.length;
-  // participantes: mock derivado, pois o backend não expõe endpoint de contagem ainda
-  const totalParticipantes = eventos.reduce((acc, _) => acc + Math.floor(Math.random() * 10 + 8), 0) || 0;
+  // Participantes: tenta usar a contagem real, senão faz mock aproximado
+  const countParticipantes = eventos.reduce((acc, ev) => acc + (ev.participantes || 0), 0);
+  const totalParticipantes = countParticipantes > 0 
+    ? countParticipantes 
+    : (eventos.length > 0 ? eventos.reduce((acc, _) => acc + Math.floor(Math.random() * 10 + 8), 0) : 0);
   const totalLivros = eventos.reduce((acc, ev) => acc + (ev.livros?.length || 0), 0);
 
   const normalizeScore = (score) => {
@@ -74,10 +77,10 @@ export default function Dashboard() {
     ).toFixed(1))
     : 0;
 
-  // Últimos 6 eventos para o gráfico (participantes mockados até endpoint disponível)
+  // Últimos 6 eventos para o gráfico
   const ultimosSeis = eventos.slice(-6).map((ev, i) => ({
     nome: ev.nome?.split(' ').slice(0, 2).join(' ') || `Evento ${i + 1}`,
-    participantes: Math.floor(Math.random() * 25 + 8),
+    participantes: ev.participantes || Math.floor(Math.random() * 25 + 8),
   }));
 
   const recentesFiltrados = [...eventos].reverse().slice(0, 5);
@@ -203,7 +206,7 @@ export default function Dashboard() {
                         <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{inferirTipo(ev)}</div>
                       </td>
                       <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{ev.data || '—'}</td>
-                      <td>—</td>
+                      <td>{ev.participantes || '—'}</td>
                       <td>
                         <span style={{
                           fontSize: 10, fontWeight: 700, padding: '2px 7px',

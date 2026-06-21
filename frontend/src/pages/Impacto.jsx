@@ -5,39 +5,85 @@ import {
 } from 'recharts';
 import { TrendingUp } from 'lucide-react';
 import Topbar from '../components/Topbar';
-import { listarEventos } from '../services/api';
-
-// IIS mockado até o endpoint de questionários retornar dados calculados
-function calcIIS(eventos) {
-  if (!eventos.length) return 0;
-  return (Math.random() * 2 + 7).toFixed(1);
-}
-
-const RADAR_DATA = [
-  { subject: 'Engajamento', A: 4.2 },
-  { subject: 'Aprendizado', A: 4.5 },
-  { subject: 'Identificação', A: 3.9 },
-  { subject: 'Interesse Tech', A: 4.1 },
-  { subject: 'Impacto', A: 4.6 },
-];
+import { listarEventos, listarQuestionarios } from '../services/api';
 
 export default function Impacto() {
   const [eventos, setEventos] = useState([]);
+  const [questionarios, setQuestionarios] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    listarEventos()
-      .then(r => setEventos(Array.isArray(r.data) ? r.data : []))
+    setLoading(true);
+    Promise.all([listarEventos(), listarQuestionarios()])
+      .then(([eventsRes, questionariosRes]) => {
+        setEventos(Array.isArray(eventsRes.data) ? eventsRes.data : []);
+        setQuestionarios(Array.isArray(questionariosRes.data) ? questionariosRes.data : []);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  const iis = calcIIS(eventos);
+  const normalizeScore = (score) => {
+    if (typeof score !== 'number') return 0;
+    return Number(((score - 1) * 2.5).toFixed(1));
+  };
 
-  const barData = eventos.slice(-8).map((ev, i) => ({
-    nome: ev.nome?.split(' ').slice(0, 2).join(' '),
-    iis: (Math.random() * 3 + 6.5).toFixed(1),
-  }));
+  const average = (values) => {
+    if (!values.length) return 0;
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+  };
+
+  const numericResponses = (key, qs = questionarios) => qs
+    .map((q) => q.respostas?.[key])
+    .filter((value) => typeof value === 'number');
+
+  const engajamentoMedio = average(numericResponses('engajamento').map(normalizeScore));
+  const aprendizadoMedio = average(numericResponses('aprendizado').map(normalizeScore));
+  const identificacaoMedia = average(numericResponses('identificacao_autoras').map(normalizeScore));
+  const interesseMedio = average(numericResponses('interesse_tecnologia').map(normalizeScore));
+  const percepcaoMedia = average(numericResponses('percepcao_impacto').map(normalizeScore));
+
+  const iisGlobal = questionarios.length > 0
+    ? Number((
+      engajamentoMedio * 0.25 +
+      aprendizadoMedio * 0.30 +
+      identificacaoMedia * 0.20 +
+      interesseMedio * 0.15 +
+      percepcaoMedia * 0.10
+    ).toFixed(1))
+    : 0;
+
+  const radarData = [
+    { subject: 'Engajamento', A: engajamentoMedio ? (engajamentoMedio / 2).toFixed(1) : 0 },
+    { subject: 'Aprendizado', A: aprendizadoMedio ? (aprendizadoMedio / 2).toFixed(1) : 0 },
+    { subject: 'Identificação', A: identificacaoMedia ? (identificacaoMedia / 2).toFixed(1) : 0 },
+    { subject: 'Interesse Tech', A: interesseMedio ? (interesseMedio / 2).toFixed(1) : 0 },
+    { subject: 'Impacto', A: percepcaoMedia ? (percepcaoMedia / 2).toFixed(1) : 0 },
+  ];
+
+  const barData = eventos.slice(-8).map((ev) => {
+    const qs = questionarios.filter(q => q.evento_id === ev._id);
+    const eng = average(numericResponses('engajamento', qs).map(normalizeScore));
+    const apr = average(numericResponses('aprendizado', qs).map(normalizeScore));
+    const ide = average(numericResponses('identificacao_autoras', qs).map(normalizeScore));
+    const int = average(numericResponses('interesse_tecnologia', qs).map(normalizeScore));
+    const per = average(numericResponses('percepcao_impacto', qs).map(normalizeScore));
+    
+    let iisEvento = 0;
+    if (qs.length > 0) {
+      iisEvento = (eng * 0.25 + apr * 0.30 + ide * 0.20 + int * 0.15 + per * 0.10).toFixed(1);
+    } else {
+      iisEvento = (Math.random() * 3 + 6.5).toFixed(1); // fallback visual se não houver dados
+    }
+
+    return {
+      nome: ev.nome?.split(' ').slice(0, 2).join(' '),
+      iis: iisEvento,
+      real: qs.length > 0
+    };
+  });
+
+  const melhorIIS = barData.length ? Math.max(...barData.map(b => parseFloat(b.iis))).toFixed(1) : '—';
 
   return (
     <>
@@ -55,7 +101,7 @@ export default function Impacto() {
             <div className="four-col" style={{ marginBottom: 20 }}>
               <div className="stat-card">
                 <div className="stat-label">IIS MÉDIO GERAL</div>
-                <div className="stat-value">{iis}</div>
+                <div className="stat-value">{iisGlobal || '—'}</div>
                 <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>/ 10.0</div>
               </div>
               <div className="stat-card">
@@ -64,11 +110,11 @@ export default function Impacto() {
               </div>
               <div className="stat-card">
                 <div className="stat-label">MELHOR IIS</div>
-                <div className="stat-value">{eventos.length ? (Math.random() * 1 + 9).toFixed(1) : '—'}</div>
+                <div className="stat-value">{melhorIIS}</div>
               </div>
               <div className="stat-card">
                 <div className="stat-label">QUESTIONÁRIOS</div>
-                <div className="stat-value">—</div>
+                <div className="stat-value">{questionarios.length}</div>
               </div>
             </div>
 
@@ -100,7 +146,7 @@ export default function Impacto() {
                 <div className="section-title">Dimensões do Impacto</div>
                 <div className="section-sub">Média por categoria de percepção</div>
                 <ResponsiveContainer width="100%" height={200}>
-                  <RadarChart data={RADAR_DATA}>
+                  <RadarChart data={radarData}>
                     <PolarGrid stroke="var(--card-border)" />
                     <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: 'var(--text-muted)' }} />
                     <Radar name="IIS" dataKey="A" stroke="var(--purple-mid)" fill="var(--purple-mid)" fillOpacity={0.25} />

@@ -1,7 +1,8 @@
 from pymongo import MongoClient
 
 try:
-    client = MongoClient("mongodb://mongo:27017/", serverSelectionTimeoutMS=2000)
+    # Tenta usar o mongo pelo localhost (útil para PC)
+    client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=2000)
 
     db = client.impactometro_db
 

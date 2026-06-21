@@ -14,12 +14,13 @@ function downloadBlob(content, filename, mime) {
 }
 
 function toCSV(eventos) {
-  const header = ['ID', 'Nome', 'Data', 'Local', 'Livros', 'Autoras'];
+  const header = ['ID', 'Nome', 'Data', 'Local', 'Participantes', 'Livros', 'Autoras'];
   const rows = eventos.map(ev => [
     ev._id || '',
     ev.nome || '',
     ev.data || '',
     ev.local || '',
+    ev.participantes || '',
     (ev.livros || []).map(l => l.titulo).join('; '),
     (ev.livros || []).map(l => l.autora).join('; '),
   ]);

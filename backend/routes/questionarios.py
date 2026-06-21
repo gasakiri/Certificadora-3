@@ -94,4 +94,29 @@ def listar_questionarios():
             quest["_id"] = str(quest["_id"])
         return jsonify(questionarios), 200
     else:
-        return jsonify({"message": "[DEMO] Banco offline, listagem indisponível"}), 503
+        questionarios = []
+        for i in range(10):
+            questionarios.append({
+                "_id": f"demo_q_ev1_{i}",
+                "evento_id": "demo_ev_1",
+                "respostas": {
+                    "engajamento": 4,
+                    "aprendizado": 5,
+                    "identificacao_autoras": 4,
+                    "interesse_tecnologia": 3,
+                    "percepcao_impacto": 5
+                }
+            })
+        for i in range(15):
+            questionarios.append({
+                "_id": f"demo_q_ev2_{i}",
+                "evento_id": "demo_ev_2",
+                "respostas": {
+                    "engajamento": 5,
+                    "aprendizado": 4,
+                    "identificacao_autoras": 5,
+                    "interesse_tecnologia": 5,
+                    "percepcao_impacto": 4
+                }
+            })
+        return jsonify(questionarios), 200

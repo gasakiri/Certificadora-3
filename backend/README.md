@@ -1,4 +1,4 @@
-# Impactômetro Leia Mulheres - Backend (Entrega Parcial)
+# Impactômetro Leia Mulheres - Backend
 
 Este diretório contém a API backend para o sistema **Impactômetro Leia Mulheres**, desenvolvida para a quantificação do impacto social do projeto de extensão.
 
@@ -17,6 +17,10 @@ Para compilar e executar este projeto, são necessárias as seguintes ferramenta
 * `pymongo`
 
   * Driver de conexão com MongoDB.
+
+* `flask-cors`
+
+  * Gerenciamento de políticas de CORS para comunicação segura com o frontend React.
 
 * `flasgger`
 

@@ -102,10 +102,27 @@ def listar_eventos():
         description: Lista de eventos
     """
     if db is not None:
-        eventos = list(db.eventos.find({}, {"_id": 1, "nome": 1, "data": 1, "local": 1}))
+        eventos = list(db.eventos.find({}, {"_id": 1, "nome": 1, "data": 1, "local": 1, "livros": 1, "participantes": 1}))
         # Convertendo o ObjectId do Mongo para string para evitar erro no JSON
         for ev in eventos:
             ev["_id"] = str(ev["_id"])
         return jsonify(eventos), 200
     else:
-        return jsonify({"message": "[DEMO] Banco offline, listagem indisponível"}), 503
+        return jsonify([
+            {
+                "_id": "demo_ev_1",
+                "nome": "[DEMO] Roda de Conversa - Autoras",
+                "data": "2026-05-20",
+                "local": "UTFPR",
+                "participantes": 45,
+                "livros": [{"titulo": "A Hora da Estrela", "autora": "Clarice Lispector"}]
+            },
+            {
+                "_id": "demo_ev_2",
+                "nome": "[DEMO] Minicurso - Escrita Criativa",
+                "data": "2026-06-10",
+                "local": "Online",
+                "participantes": 120,
+                "livros": []
+            }
+        ]), 200

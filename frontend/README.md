@@ -11,6 +11,7 @@ Para executar este projeto, são necessárias as seguintes ferramentas:
 * **Navegação:** [React Router DOM](https://reactrouter.com/)
 * **Gráficos:** [Recharts](https://recharts.org/)
 * **HTTP:** [Axios](https://axios-http.com/)
+* **Exportação PDF:** [jsPDF](https://parall.ax/products/jspdf) e [html2canvas](https://html2canvas.hertzen.com/)
 * **Ícones:** [Lucide React](https://lucide.dev/)
 * **IDE Recomendada:** [Visual Studio Code](https://code.visualstudio.com/)
 
@@ -24,6 +25,8 @@ Para executar este projeto, são necessárias as seguintes ferramentas:
   * Visualização de dados em gráficos.
 * `lucide-react`
   * Ícones e componentes visuais.
+* `jspdf` e `html2canvas`
+  * Geração e exportação de relatórios em PDF.
 * `vite`
   * Ferramenta de build e desenvolvimento.
 
