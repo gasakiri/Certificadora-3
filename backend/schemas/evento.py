@@ -9,4 +9,6 @@ class EventoSchema(BaseModel):
 
     local: str = Field(..., description="Local do evento")
 
+    tipo: str = Field(default="Roda de Conversa", description="Tipo do evento")
+
     livros: List[Dict] = Field(default=[], description="Livros e autoras discutidos")
