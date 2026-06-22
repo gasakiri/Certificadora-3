@@ -146,7 +146,11 @@ def login():
         raw = request.get_json()
         dados = UsuarioLoginSchema(**raw)
 
-        if db is not None:
+        # Permite login demo independente do banco estar conectado
+        if dados.email == "demo@utfpr.edu.br" and dados.senha == "demo123":
+            user_id = "demo-id"
+            nome = "Usuário Demo"
+        elif db is not None:
             usuario = db.usuarios.find_one({"email": dados.email})
             if not usuario:
                 return jsonify({"message": "Email ou senha incorretos"}), 401
@@ -158,12 +162,7 @@ def login():
             user_id = str(usuario["_id"])
             nome = usuario["nome"]
         else:
-            # Modo demo — aceita qualquer login
-            if dados.email == "demo@utfpr.edu.br" and dados.senha == "demo123":
-                user_id = "demo-id"
-                nome = "Usuário Demo"
-            else:
-                return jsonify({"message": "Modo demo: use demo@utfpr.edu.br / demo123"}), 401
+            return jsonify({"message": "Modo demo: use demo@utfpr.edu.br / demo123"}), 401
 
         token = gerar_token(user_id, nome, dados.email)
         return jsonify({
