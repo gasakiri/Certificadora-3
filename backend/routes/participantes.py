@@ -70,3 +70,25 @@ def criar_participante():
 
     except Exception as e:
         return jsonify({"message": "Erro interno", "error": str(e)}), 500
+
+
+@participantes_bp.route("/api/participantes", methods=["GET"])
+def listar_participantes():
+    """Listar todos os participantes cadastrados
+    ---
+    tags:
+      - Participantes
+    responses:
+      200:
+        description: Lista de participantes
+    """
+    if db is not None:
+        participantes = list(db.participantes.find({}, {"_id": 1, "nome": 1, "curso": 1, "email": 1}))
+        for p in participantes:
+            p["_id"] = str(p["_id"])
+        return jsonify(participantes), 200
+    else:
+        return jsonify([
+            {"_id": "demo_p_1", "nome": "Participante Demo 1", "curso": "Engenharia de Computação", "email": "demo1@utfpr.edu.br"},
+            {"_id": "demo_p_2", "nome": "Participante Demo 2", "curso": "Ciência da Computação", "email": "demo2@utfpr.edu.br"},
+        ]), 200
