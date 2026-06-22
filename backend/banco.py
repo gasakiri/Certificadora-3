@@ -1,14 +1,20 @@
+import os
+
 from pymongo import MongoClient
 
-try:
-    # Tenta usar o mongo pelo localhost (útil para PC)
-    client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=2000)
+from services.modelagem import garantir_indices
 
-    db = client.impactometro_db
+try:
+    mongo_uri = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
+    mongo_db = os.environ.get("MONGO_DB", "impactometro_db")
+    client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
+
+    db = client[mongo_db]
 
     client.server_info()
+    garantir_indices(db)
 
-    print("MongoDB conectado!")
+    print(f"MongoDB conectado em {mongo_uri}")
 
 except Exception:
     print("AVISO: MongoDB não detectado.")

@@ -60,8 +60,6 @@ def registrar_participacao():
         else:
             return jsonify({"message": "[DEMO] Participação validada, sem banco", "data": dados}), 201
 
-        return jsonify({"message": "Participação registrada!"}), 201
-
     except ValidationError as e:
         return jsonify({"message": "Erro de validação", "errors": e.errors()}), 400
 

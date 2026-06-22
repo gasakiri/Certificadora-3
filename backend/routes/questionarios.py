@@ -29,6 +29,9 @@ def submeter_questionario():
             evento_id:
               type: string
               example: "69fde0fb83fd5de6f521a3b6"
+            momento:
+              type: string
+              example: "depois"
             respostas:
               type: object
               example:
@@ -43,6 +46,9 @@ def submeter_questionario():
     """
     try:
         raw_data = request.get_json()
+        if raw_data and "momento" not in raw_data and isinstance(raw_data.get("respostas"), dict):
+            raw_data["momento"] = raw_data["respostas"].pop("momento", "depois")
+
         quest = QuestionarioSchema(**raw_data)
         dados = quest.model_dump()
         if db is not None:
@@ -60,6 +66,7 @@ def submeter_questionario():
                 {
                     "participante_id": dados["participante_id"],
                     "evento_id": dados["evento_id"],
+                    "momento": dados["momento"],
                 },
                 {"$set": dados},
                 upsert=True,
@@ -89,7 +96,7 @@ def listar_questionarios():
         description: Lista de questionários
     """
     if db is not None:
-        questionarios = list(db.questionarios.find({}, {"_id": 1, "participante_id": 1, "evento_id": 1, "respostas": 1}))
+        questionarios = list(db.questionarios.find({}, {"_id": 1, "participante_id": 1, "evento_id": 1, "momento": 1, "respostas": 1}))
         for quest in questionarios:
             quest["_id"] = str(quest["_id"])
         return jsonify(questionarios), 200
@@ -99,6 +106,8 @@ def listar_questionarios():
             questionarios.append({
                 "_id": f"demo_q_ev1_{i}",
                 "evento_id": "demo_ev_1",
+                "participante_id": f"demo_p_{i}",
+                "momento": "depois",
                 "respostas": {
                     "engajamento": 4,
                     "aprendizado": 5,
@@ -111,6 +120,8 @@ def listar_questionarios():
             questionarios.append({
                 "_id": f"demo_q_ev2_{i}",
                 "evento_id": "demo_ev_2",
+                "participante_id": f"demo_p_{i + 10}",
+                "momento": "depois",
                 "respostas": {
                     "engajamento": 5,
                     "aprendizado": 4,
