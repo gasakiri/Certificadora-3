@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => limpar(), []);
 
   return (
-    <AuthContext.Provider value={{ usuario, carregando, login, cadastrar, logout, autenticado: !!usuario }}>
+    <AuthContext.Provider value={{ usuario, carregando, login, cadastrar, logout, autenticado: !!usuario, isAdmin: usuario?.papel === 'admin' }}>
       {children}
     </AuthContext.Provider>
   );

@@ -11,8 +11,8 @@ const navItems = [
     links: [
       { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { to: '/eventos', label: 'Eventos', icon: Calendar },
-      { to: '/participantes', label: 'Participantes', icon: Users },
-      { to: '/questionarios', label: 'Questionários', icon: ClipboardList },
+      { to: '/participantes', label: 'Participantes', icon: Users, adminOnly: true },
+      { to: '/questionarios', label: 'Questionários', icon: ClipboardList, adminOnly: true },
     ]
   },
   {
@@ -36,7 +36,7 @@ function iniciais(nome = '') {
 }
 
 export default function Sidebar() {
-  const { usuario, logout } = useAuth();
+  const { usuario, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -55,21 +55,26 @@ export default function Sidebar() {
       </div>
 
       <nav className="sidebar-nav">
-        {navItems.map(({ section, links }) => (
-          <div key={section}>
-            <div className="nav-section-label">{section}</div>
-            {links.map(({ to, label, icon: Icon }) => (
-              <NavLink
-                key={to}
-                to={to}
-                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-              >
-                <Icon size={14} />
-                {label}
-              </NavLink>
-            ))}
-          </div>
-        ))}
+        {navItems.map(({ section, links }) => {
+          const visibleLinks = links.filter(l => !l.adminOnly || isAdmin);
+          if (visibleLinks.length === 0) return null;
+          
+          return (
+            <div key={section}>
+              <div className="nav-section-label">{section}</div>
+              {visibleLinks.map(({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+                >
+                  <Icon size={14} />
+                  {label}
+                </NavLink>
+              ))}
+            </div>
+          );
+        })}
       </nav>
 
       <div className="sidebar-footer" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
@@ -79,7 +84,7 @@ export default function Sidebar() {
             <div className="user-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {usuario?.nome || 'Usuário'}
             </div>
-            <div className="user-role">Administrador</div>
+            <div className="user-role">{isAdmin ? 'Administrador' : 'Espectador'}</div>
           </div>
         </div>
         <button

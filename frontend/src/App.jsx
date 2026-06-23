@@ -51,17 +51,17 @@ export default function App() {
             </RotaProtegida>
           } />
           <Route path="/eventos/novo" element={
-            <RotaProtegida>
+            <RotaProtegida exigirAdmin={true}>
               <AppLayout><CadastroEvento /></AppLayout>
             </RotaProtegida>
           } />
           <Route path="/participantes" element={
-            <RotaProtegida>
+            <RotaProtegida exigirAdmin={true}>
               <AppLayout><Participantes /></AppLayout>
             </RotaProtegida>
           } />
           <Route path="/questionarios" element={
-            <RotaProtegida>
+            <RotaProtegida exigirAdmin={true}>
               <AppLayout><Questionarios /></AppLayout>
             </RotaProtegida>
           } />

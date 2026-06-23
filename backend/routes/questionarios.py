@@ -2,11 +2,13 @@ from flask import Blueprint, jsonify, request
 from pydantic import ValidationError
 from banco import db
 from schemas.questionario import QuestionarioSchema
+from routes.auth import admin_requerido, token_requerido
 
 questionarios_bp = Blueprint("questionarios", __name__)
 
 
 @questionarios_bp.route("/api/questionarios", methods=["POST"])
+@admin_requerido
 def submeter_questionario():
     """Submeter questionário de impacto (RF2)
     ---
@@ -86,6 +88,7 @@ def submeter_questionario():
 
 
 @questionarios_bp.route("/api/questionarios", methods=["GET"])
+@token_requerido
 def listar_questionarios():
     """Listar todos os questionários cadastrados
     ---

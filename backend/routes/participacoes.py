@@ -2,11 +2,13 @@ from flask import Blueprint, jsonify, request
 from pydantic import ValidationError
 from banco import db
 from schemas.participacao import ParticipacaoSchema
+from routes.auth import admin_requerido
 
 participacoes_bp = Blueprint("participacoes", __name__)
 
 
 @participacoes_bp.route("/api/participacoes", methods=["POST"])
+@admin_requerido
 def registrar_participacao():
     """Registrar participação em evento
     ---

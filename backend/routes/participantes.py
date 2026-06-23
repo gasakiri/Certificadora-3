@@ -3,11 +3,13 @@ from pydantic import ValidationError
 
 from banco import db
 from schemas.participante import ParticipanteSchema
+from routes.auth import admin_requerido
 
 participantes_bp = Blueprint("participantes", __name__)
 
 
 @participantes_bp.route("/api/participantes", methods=["POST"])
+@admin_requerido
 def criar_participante():
     """Cadastrar participante
     ---

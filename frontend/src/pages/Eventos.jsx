@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { Plus, Search, BookOpen, MapPin, CalendarDays } from 'lucide-react';
 import Topbar from '../components/Topbar';
 import TipoBadge from '../components/TipoBadge';
@@ -16,6 +17,7 @@ function inferirTipo(ev) {
 
 export default function Eventos() {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [eventos, setEventos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState('');
@@ -69,9 +71,11 @@ export default function Eventos() {
           ))}
         </div>
 
-        <button className="btn btn-primary" onClick={() => navigate('/eventos/novo')}>
-          <Plus size={13} /> Cadastrar Evento
-        </button>
+        {isAdmin && (
+          <button className="btn btn-primary" onClick={() => navigate('/eventos/novo')}>
+            <Plus size={13} /> Cadastrar Evento
+          </button>
+        )}
       </Topbar>
 
       <div className="page-content">

@@ -1,8 +1,8 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function RotaProtegida({ children }) {
-  const { autenticado, carregando } = useAuth();
+export default function RotaProtegida({ children, exigirAdmin = false }) {
+  const { autenticado, carregando, isAdmin } = useAuth();
   const location = useLocation();
 
   if (carregando) {
@@ -26,6 +26,10 @@ export default function RotaProtegida({ children }) {
 
   if (!autenticado) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (exigirAdmin && !isAdmin) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

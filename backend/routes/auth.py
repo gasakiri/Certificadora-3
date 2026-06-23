@@ -13,11 +13,12 @@ SECRET_KEY = os.environ.get("JWT_SECRET", "impactometro-leia-mulheres-secret-202
 TOKEN_EXPIRY_HOURS = 24
 
 
-def gerar_token(user_id: str, nome: str, email: str) -> str:
+def gerar_token(user_id: str, nome: str, email: str, papel: str = "viewer") -> str:
     payload = {
         "sub": user_id,
         "nome": nome,
         "email": email,
+        "papel": papel,
         "iat": datetime.now(timezone.utc),
         "exp": datetime.now(timezone.utc) + timedelta(hours=TOKEN_EXPIRY_HOURS),
     }
@@ -46,6 +47,18 @@ def token_requerido(f):
         if payload is None:
             return jsonify({"message": "Token inválido ou expirado"}), 401
         request.usuario = payload
+        return f(*args, **kwargs)
+    return decorated
+
+
+def admin_requerido(f):
+    """Decorator para proteger rotas exclusivas de administradores."""
+    from functools import wraps
+    @wraps(f)
+    @token_requerido
+    def decorated(*args, **kwargs):
+        if request.usuario.get("papel") != "admin":
+            return jsonify({"message": "Acesso negado: privilégios de administrador requeridos"}), 403
         return f(*args, **kwargs)
     return decorated
 
@@ -95,6 +108,7 @@ def cadastro():
                 "nome": dados.nome,
                 "email": dados.email,
                 "senha_hash": senha_hash,
+                "papel": "viewer",
                 "criado_em": datetime.now(timezone.utc).isoformat(),
             })
             user_id = str(result.inserted_id)
@@ -102,11 +116,11 @@ def cadastro():
             # Modo demo — sem banco
             user_id = "demo-user-id"
 
-        token = gerar_token(user_id, dados.nome, dados.email)
+        token = gerar_token(user_id, dados.nome, dados.email, "viewer")
         return jsonify({
             "message": "Usuário criado com sucesso!",
             "token": token,
-            "usuario": {"id": user_id, "nome": dados.nome, "email": dados.email},
+            "usuario": {"id": user_id, "nome": dados.nome, "email": dados.email, "papel": "viewer"},
         }), 201
 
     except ValidationError as e:
@@ -150,6 +164,7 @@ def login():
         if dados.email == "demo@utfpr.edu.br" and dados.senha == "demo123":
             user_id = "demo-id"
             nome = "Usuário Demo"
+            papel = "admin"
         elif db is not None:
             usuario = db.usuarios.find_one({"email": dados.email})
             if not usuario:
@@ -161,14 +176,15 @@ def login():
 
             user_id = str(usuario["_id"])
             nome = usuario["nome"]
+            papel = usuario.get("papel", "viewer")
         else:
             return jsonify({"message": "Modo demo: use demo@utfpr.edu.br / demo123"}), 401
 
-        token = gerar_token(user_id, nome, dados.email)
+        token = gerar_token(user_id, nome, dados.email, papel)
         return jsonify({
             "message": "Login realizado com sucesso!",
             "token": token,
-            "usuario": {"id": user_id, "nome": nome, "email": dados.email},
+            "usuario": {"id": user_id, "nome": nome, "email": dados.email, "papel": papel},
         }), 200
 
     except ValidationError as e:

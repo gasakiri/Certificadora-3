@@ -3,11 +3,13 @@ from pydantic import ValidationError
 
 from banco import db
 from schemas.evento import EventoSchema
+from routes.auth import admin_requerido, token_requerido
 
 eventos_bp = Blueprint("eventos", __name__)
 
 
 @eventos_bp.route("/api/eventos", methods=["POST"])
+@admin_requerido
 def criar_evento():
     """Registrar um novo evento (RF1)
     ---
@@ -96,6 +98,7 @@ def criar_evento():
         return jsonify({"message": "Erro interno", "error": str(e)}), 500
 
 @eventos_bp.route("/api/eventos", methods=["GET"])
+@token_requerido
 def listar_eventos():
     """Listar todos os eventos cadastrados
     ---
