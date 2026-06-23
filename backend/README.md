@@ -46,6 +46,7 @@ Para compilar e executar este projeto, são necessárias as seguintes ferramenta
 backend/
 ├── app.py
 ├── banco.py
+├── criar_admin.py
 ├── seed_demo.py
 ├── Dockerfile
 ├── docker-compose.yml
@@ -150,7 +151,27 @@ python app.py
 
 ---
 
-## 5. Roteiro de Testes
+## 5. Controle de Acesso (RBAC)
+
+O backend do Impactômetro implementa um controle de acesso baseado em papéis (RBAC):
+*   **Administrador (`admin`)**: Possui permissões totais para ler e registrar/editar dados (eventos, participantes, questionários, etc.).
+*   **Espectador (`viewer`)**: Possui permissão apenas para leitura (visualizar dashboards, relatórios e métricas de impacto). Qualquer tentativa de registro ou alteração sem permissão apropriada retornará `403 Forbidden`.
+
+### Usuário Demo Padrão
+O sistema inicializa um usuário demo que possui privilégios de **administrador**:
+*   **Email:** `demo@utfpr.edu.br`
+*   **Senha:** `demo123`
+
+### Criando Novos Administradores via CLI
+Para criar um novo usuário com papel de administrador diretamente no banco de dados, com o ambiente virtual ativo, execute:
+```bash
+python criar_admin.py
+```
+*Nota: Novas contas registradas via tela de cadastro ou na rota `/api/auth/cadastro` recebem papel de **espectador** por padrão.*
+
+---
+
+## 6. Roteiro de Testes
 
 ### Apresentação das Funcionalidades
 
@@ -169,26 +190,28 @@ python app.py
 ### Como Testar
 
 1. Acesse a documentação interativa em: `http://localhost:5000/apidocs/`.
-2. **Teste de Autenticação:**
-   * Clique em `POST /api/auth/cadastro` -> `Try it out`. Envie nome, email e senha para criar um usuário. Copie o `token` retornado.
-   * Para fazer login com o usuário criado, use `POST /api/auth/login` e verifique a resposta `200 OK`.
-3. **Teste de Eventos (RF1):**
+2. **Teste de Autenticação e Perfis (Importante):**
+   * Por padrão, novas contas criadas em `POST /api/auth/cadastro` recebem o papel de **espectador** (`viewer`) e **não podem** cadastrar eventos ou participantes (retornam `403 Forbidden`).
+   * Para testar a API com permissão de escrita, faça login com a conta de **Administrador Demo** enviando o email `demo@utfpr.edu.br` e senha `demo123` na rota `POST /api/auth/login`.
+   * Copie o `token` retornado.
+   * Cole o token no campo de autenticação (Header `Authorization: Bearer <token>`) para autorizar as requisições protegidas.
+3. **Teste de Eventos (RF1 - Requer Admin):**
    * Clique em `POST /api/eventos` -> `Try it out`.
    * Envie o JSON de exemplo e verifique a resposta `201 Created`.
    * Para listar os eventos, use `GET /api/eventos` -> `Try it out` -> `Execute`. Copie o `_id` gerado para usar nos próximos passos.
-4. **Teste de Participantes:**
+4. **Teste de Participantes (Requer Admin):**
    * Clique em `POST /api/participantes` -> `Try it out`.
    * Envie o JSON com os dados e verifique a resposta `201 Created`. Copie o `id` gerado.
-5. **Teste de Participações:**
+5. **Teste de Participações (Requer Admin):**
    * Clique em `POST /api/participacoes` -> `Try it out`.
    * No JSON de exemplo, substitua os campos pelos IDs copiados nos passos 3 e 4. Verifique a resposta `201 Created`.
-6. **Teste de Questionários (RF2):**
+6. **Teste de Questionários (RF2 - Requer Admin):**
    * Clique em `POST /api/questionarios` -> `Try it out`.
    * Utilize os mesmos IDs para vincular as respostas ao evento e verifique o registro do impacto com a resposta `201 Created`.
 
 ---
 
-## 6. Testes Unitários
+## 7. Testes Unitários
 
 Os testes cobrem a modelagem do banco, schemas e as rotas principais. O `pytest.ini` já configura o `pythonpath` para que os módulos do backend sejam encontrados corretamente.
 
@@ -219,7 +242,7 @@ pytest -v
 
 ---
 
-## 7. Vídeo de Demonstração
+## 8. Vídeo de Demonstração
 
 O link para o vídeo com a instalação das ferramentas e execução do sistema pode ser encontrado abaixo:
 
@@ -227,7 +250,7 @@ O link para o vídeo com a instalação das ferramentas e execução do sistema 
 
 ---
 
-## 8. Equipe
+## 9. Equipe
 
 * Gabriel Augusto Morisaki Rita
 * Kalvin Koiti Ishii
@@ -236,6 +259,6 @@ O link para o vídeo com a instalação das ferramentas e execução do sistema 
 
 ---
 
-## 9. Objetivo do Projeto
+## 10. Objetivo do Projeto
 
 Mensurar cientificamente o impacto social do projeto de extensão **Leia Mulheres**, utilizando coleta estruturada de dados, indicadores de percepção social e análise de engajamento.

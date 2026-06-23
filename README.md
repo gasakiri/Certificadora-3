@@ -17,6 +17,7 @@ Este repositório contém o código-fonte e a documentação do sistema **Impact
     *   Exportação de Dados em CSV e JSON.
     *   Validação de Dados com Pydantic Schemas.
     *   Documentação Automática e Testável via Swagger UI.
+    *   Controle de Acesso Baseado em Perfis (RBAC - Administrador e Espectador).
 
 ## 2. Estrutura do Projeto
 *   `/backend`: API em Python/Flask (Funcionalidades de coleta e processamento).

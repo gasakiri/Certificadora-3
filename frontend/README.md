@@ -111,3 +111,27 @@ npm run build
 | Variável | Padrão | Descrição |
 |----------|--------|-----------|
 | `VITE_API_URL` | `http://localhost:5000` | URL base da API Flask |
+
+---
+
+## 5. Controle de Acesso (RBAC)
+
+A interface do frontend gerencia a visibilidade de recursos com base no papel do usuário obtido através do token JWT:
+
+*   **Administrador (`admin`)**:
+    *   Acesso total ao sistema.
+    *   Pode visualizar e navegar pelos menus de **Participantes** e **Questionários**.
+    *   Visualiza botões de cadastro (ex: "Novo Evento" no Dashboard e "Cadastrar Evento" na listagem de Eventos).
+*   **Espectador (`viewer`)**:
+    *   Permissão de apenas leitura.
+    *   Visualiza todos os Dashboards, Análise de Impacto, Relatórios PDF e páginas de Exportação de Dados.
+    *   Os links de gerenciamento (Participantes, Questionários) e botões de criação ficam ocultos no menu lateral e na interface.
+    *   Tentativas de acessar páginas administrativas digitando a URL diretamente no navegador são bloqueadas pela rota protegida do React Router.
+
+### Credenciais para Teste
+
+*   **Administrador (Demo):**
+    *   **Email:** `demo@utfpr.edu.br`
+    *   **Senha:** `demo123`
+*   **Espectador:**
+    *   Para testar como espectador, basta clicar em **Criar conta** na tela de login e registrar um novo usuário. Qualquer nova conta criada recebe automaticamente o papel de espectador.
