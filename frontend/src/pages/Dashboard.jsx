@@ -6,6 +6,7 @@ import {
 import { Calendar, Users, BookOpen, ClipboardCheck, Search, Plus } from 'lucide-react';
 import Topbar from '../components/Topbar';
 import { listarEventos, listarQuestionarios } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 const BAR_COLORS = ['#c4b8e0', '#4a3f6e', '#9b6dd6', '#6b3fa0', '#c9378a', '#e4b43c'];
 
@@ -19,6 +20,7 @@ function inferirTipo(ev) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [eventos, setEventos] = useState([]);
   const [questionarios, setQuestionarios] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -99,9 +101,11 @@ export default function Dashboard() {
           <button className="btn btn-outline btn-pill" style={{ fontSize: 12 }}>Histórico</button>
         </div>
 
-        <button className="btn btn-primary" onClick={() => navigate('/eventos/novo')}>
-          <Plus size={13} /> Novo Evento
-        </button>
+        {isAdmin && (
+          <button className="btn btn-primary" onClick={() => navigate('/eventos/novo')}>
+            <Plus size={13} /> Novo Evento
+          </button>
+        )}
       </Topbar>
 
       <div className="page-content">
